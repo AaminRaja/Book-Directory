@@ -19,7 +19,7 @@ app.use((err, req, res, next) => {
 
 let startServer = async () => {
     try {
-        await (connectDataBase(process.env.PORT))
+        await (connectDataBase(process.env.MONGO_URI))
         console.log('mongodb connected successfully');
 
         app.listen(5100, () => {
