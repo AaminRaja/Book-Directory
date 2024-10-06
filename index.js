@@ -17,17 +17,34 @@ app.use((err, req, res, next) => {
     res.json({ error: true, message: err })
 })
 
+// let startServer = async () => {
+//     try {
+//         await (connectDataBase(process.env.MONGO_URI))
+//         console.log('mongodb connected successfully');
+
+//         app.listen(5100, () => {
+//             console.log('server is running at port : http://localhost:5100');
+//         })
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
 let startServer = async () => {
     try {
-        await (connectDataBase(process.env.MONGO_URI))
-        console.log('mongodb connected successfully');
+        // Use the environment variable for MongoDB connection string
+        await connectDataBase(process.env.MONGO_URI);
+        console.log('MongoDB connected successfully');
 
-        app.listen(5100, () => {
-            console.log('server is running at port : http://localhost:5100');
-        })
+        // Use process.env.PORT to dynamically bind to the port provided by the hosting platform
+        const port = process.env.PORT || 5100;  // Fallback to 5100 for local development
+        app.listen(port, () => {
+            console.log(`Server is running at port: http://localhost:${port}`);
+        });
     } catch (error) {
         console.log(error);
     }
-}
+};
+
 
 startServer()
