@@ -11,7 +11,8 @@
 const mongoose = require('mongoose');
 
 const connectDataBase = async (uri) => {
-    // console.log(uri);
+    console.log(uri);
+    console.log(typeof uri);
     try {
         // await mongoose.connect(uri, {
         //     useNewUrlParser: true,
