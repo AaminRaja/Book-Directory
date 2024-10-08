@@ -1,11 +1,11 @@
 let express = require('express')
 let router = express.Router()
 
-let {addBook, getBook, fetchAllBooks, updateBookeDetails, deleteBook, fetchAllAuthors, fetchCategories, fetchBooksByTitle, fetchBooksByAuthor, fetchBooksByCategory } = require('../Controllers/booksController')
+let { addBook, getBook, fetchAllBooks, updateBookeDetails, deleteBook, fetchAllAuthors, fetchCategories, fetchBooksByTitle, fetchBooksByAuthor, fetchBooksByCategory } = require('../Controllers/booksController')
 
 router.post('/addBook', addBook)
 router.get('/getBook/:id', getBook)
-router.get('/totalBooks', fetchAllBooks)
+router.get('/allBooks', fetchAllBooks)
 router.put('/updateBook/:id', updateBookeDetails)
 router.delete('/deleteBook/:id', deleteBook)
 router.get('/allAuthors', fetchAllAuthors)

@@ -18,8 +18,6 @@ app.use((err, req, res, next) => {
 })
 
 let startServer = async () => {
-    console.log(process.env.MONGO_URI);
-    console.log(typeof process.env.MONGO_URI);
     try {
         await connectDataBase(process.env.MONGO_URI);
         console.log('MongoDB connected successfully');
