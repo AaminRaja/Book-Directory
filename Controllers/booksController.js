@@ -3,10 +3,15 @@ let Book = require('../Schema/booksSchema')
 let addBook = async (req, res, next) => {
     console.log('adding new book');
     try {
-        let { title, author, language, category, publisher, edition, price } = req.body
-        // console.log(req.body);
-        // console.log(title);
-        let book = await Book.create({ title, author, language, category, publisher, edition, price })
+        let { title, author, language, category, publisher, edition, price, numberOfPieces } = req.body
+
+        title = title.toUpperCase();
+        // author = author.toLowerCase();
+        // language = language.toLowerCase();
+        // category = category.toLowerCase();
+        // publisher = publisher.toLowerCase();
+
+        let book = await Book.create({ title, author, language, category, publisher, edition, price, numberOfPieces })
         console.log(book);
         res.json({ error: false, message: "new book added to database successfully" })
     } catch (error) {
@@ -42,7 +47,14 @@ let updateBookeDetails = async (req, res, next) => {
     try {
         let { id } = req.params;
         console.log(id);
-        let { title, author, language, category, publisher, edition, price } = req.body
+        let { title, author, language, category, publisher, edition, price, numberOfPieces } = req.body
+
+        title = title.toUpperCase();
+        // author = author.toLowerCase();
+        // language = language.toLowerCase();
+        // category = category.toLowerCase();
+        // publisher = publisher.toLowerCase();
+
         let book = await Book.findByIdAndUpdate(id)
         console.log(book);
         if (!book) {
@@ -77,7 +89,28 @@ let fetchAllAuthors = async (req, res, next) => {
     try {
         let authors = await Book.distinct("author")
         console.log(authors);
-        res.json({ error: false, meassage: "fetched all authors name", authors: authors })
+        if (authors.length) {
+            res.status(200).json({ error: false, meassage: "fetched all authors name", authors })
+        } else {
+            res.json({ error: true, message: "no authors found" })
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+let fetchTenAuthorsList = async (req, res, next) => {
+    console.log('fetching ten authors name');
+    try {
+        let authors = await Book.distinct("author")
+        let tenAuthorsList = authors.slice(0, 10)
+        console.log(tenAuthorsList);
+        if (tenAuthorsList.length) {
+            res.status(200).json({ error: false, meassage: "fetched ten authors name", tenAuthorsList })
+        } else {
+            res.json({ error: true, message: "no authors found" })
+        }
+
     } catch (error) {
         next(error)
     }
@@ -98,10 +131,8 @@ let fetchBooksByTitle = async (req, res, next) => {
     console.log('fetching books by its name');
     try {
         let title = req.query.title
+        title = title.toUpperCase()
         console.log(title);
-        // let {title} = req.body
-        // console.log(req.body);
-        // console.log(title);
         let books = await Book.find({ title: title })
         console.log(books);
         res.json({ error: false, message: "fetched books by it's title", books: books })
@@ -146,6 +177,7 @@ module.exports = {
     updateBookeDetails,
     deleteBook,
     fetchAllAuthors,
+    fetchTenAuthorsList,
     fetchCategories,
     fetchBooksByTitle,
     fetchBooksByAuthor,

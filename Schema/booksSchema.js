@@ -27,6 +27,10 @@ let BooksSchema = new Schema({
     price: {
         type: String,
         required: { value: true, message: "book's price is mandatory" }
+    },
+    numberOfPieces: {
+        type: Number,
+        required: { value: true, message: "book's numberOfPieces is mandatory" }
     }
 })
 
