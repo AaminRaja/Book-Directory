@@ -121,7 +121,12 @@ let fetchCategories = async (req, res, next) => {
     try {
         let categories = await Book.distinct("category")
         console.log(categories);
-        res.json({ error: false, meassage: "fetched all categories name", categories: categories })
+        if (categories.length) {
+            res.json({ error: false, meassage: "fetched all categories name", categories: categories })
+        } else {
+            res.json({ error: true, message: "No categories" })
+        }
+
     } catch (error) {
         next(error)
     }
@@ -147,10 +152,13 @@ let fetchBooksByAuthor = async (req, res, next) => {
         // console.log(req.query.author);
         let author = req.query.author
         console.log(author);
-        // let {author} = req.body
         let books = await Book.find({ author: author })
         console.log(books);
-        res.json({ error: false, message: "fetched books by it's author name", books: books })
+        if (books.length) {
+            res.json({ error: false, message: "fetched books by it's author name", books: books })
+        } else {
+            res.json({ error: true, message: "No books for this author" })
+        }
     } catch (error) {
         next(error)
     }
@@ -164,11 +172,75 @@ let fetchBooksByCategory = async (req, res, next) => {
         // let {category} = req.body
         let books = await Book.find({ category: category })
         console.log(books);
-        res.json({ error: false, message: "fetched books by it's category(genere)", books: books })
+        if (books.length) {
+            res.json({ error: false, message: "fetched books by it's category(genere)", books: books })
+        } else {
+            res.json({ error: true, message: "No books for this category" })
+        }
+
     } catch (error) {
         next(error)
     }
 }
+
+let fetchAllLanguages = async (req, res, next) => {
+    try {
+        let languages = await Book.distinct("language")
+        if (languages.length) {
+            res.status(200).json({ error: false, message: "Fetching all languages", languages })
+        } else {
+            res.json({ error: true, message: "No languages" })
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+let fetchBooksByLanguage = async (req, res, next) => {
+    try {
+        console.log("Fteching books by languae");
+        let { language } = req.query
+        let books = await Book.find({ language: language })
+        if (books.length) {
+            res.status(200).json({ error: false, message: "fetched all books by language", books })
+        } else {
+            res.json({ error: true, message: "No books for this language" })
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+let fetchAllPublisher = async (req, res, next) => {
+    try {
+        let publishers = await Book.distinct("publisher")
+        if (publishers.length) {
+            res.status(200).json({ error: false, message: "Fetching all publishers", publishers })
+        } else {
+            res.json({ error: true, message: "No publishers" })
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+let fetchBooksByPublishers = async (req, res, next) => {
+    console.log("Fteching books by publisher");
+    try {
+        let { publisher } = req.query
+        console.log(publisher);
+        let books = await Book.find({ publisher: publisher })
+        console.log(books);
+        if (books.length) {
+            res.status(200).json({ error: false, message: "fetched all books by publisher", books })
+        } else {
+            res.json({ error: true, message: "No books for this publisher" })
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 module.exports = {
     addBook,
@@ -181,5 +253,9 @@ module.exports = {
     fetchCategories,
     fetchBooksByTitle,
     fetchBooksByAuthor,
-    fetchBooksByCategory
+    fetchBooksByCategory,
+    fetchAllLanguages,
+    fetchBooksByLanguage,
+    fetchAllPublisher,
+    fetchBooksByPublishers
 }
