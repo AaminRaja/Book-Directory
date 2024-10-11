@@ -4,16 +4,20 @@ let addBook = async (req, res, next) => {
     console.log('adding new book');
     try {
         let { title, author, language, category, publisher, edition, price, numberOfPieces } = req.body
+        if (title, author, language, category, publisher, edition, price, numberOfPieces) {
+            title = title.toUpperCase();
+            // author = author.toLowerCase();
+            // language = language.toLowerCase();
+            // category = category.toLowerCase();
+            // publisher = publisher.toLowerCase();
 
-        title = title.toUpperCase();
-        // author = author.toLowerCase();
-        // language = language.toLowerCase();
-        // category = category.toLowerCase();
-        // publisher = publisher.toLowerCase();
+            let book = await Book.create({ title, author, language, category, publisher, edition, price, numberOfPieces })
+            console.log(book);
+            res.json({ error: false, message: "new book added to database successfully", book })
+        } else {
+            res.json({ error: true, message: "Send all data" })
+        }
 
-        let book = await Book.create({ title, author, language, category, publisher, edition, price, numberOfPieces })
-        console.log(book);
-        res.json({ error: false, message: "new book added to database successfully" })
     } catch (error) {
         next(error)
     }
