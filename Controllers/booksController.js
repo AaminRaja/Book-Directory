@@ -1,3 +1,4 @@
+const { set } = require('mongoose');
 let Book = require('../Schema/booksSchema')
 
 let addBook = async (req, res, next) => {
@@ -137,14 +138,36 @@ let fetchCategories = async (req, res, next) => {
 }
 
 let fetchBooksByTitle = async (req, res, next) => {
-    console.log('fetching books by its name');
+    console.log('fetching books by its title');
     try {
-        let title = req.query.title
+        let { title } = req.query
+        console.log(title);
         title = title.toUpperCase()
         console.log(title);
-        let books = await Book.find({ title: title })
-        console.log(books);
-        res.json({ error: false, message: "fetched books by it's title", books: books })
+        let exactBooks = await Book.find({ title: title })
+        console.log(exactBooks);
+        let titles = await Book.distinct("title")
+        console.log(titles);
+        let filteredTitles = titles.filter((titleFromDB) => {
+            return titleFromDB.includes(title)
+        })
+        console.log(filteredTitles);
+        filteredTitles = filteredTitles.filter((filteredTitle) => {
+            return filteredTitle !== title
+        })
+        console.log(filteredTitles);
+        let filteredBooks = await Book.find({ title: { $in: [...filteredTitles] } })
+        console.log(filteredBooks);
+        let totalBooksByTitle = [...exactBooks, ...filteredBooks]
+        console.log(totalBooksByTitle);
+        if (totalBooksByTitle.length) {
+            totalBooksByTitle = [...new Set(totalBooksByTitle)]
+            console.log('Response array');
+            console.log(totalBooksByTitle);
+            res.json({ error: false, message: "fetched books by its title", books: totalBooksByTitle })
+        } else {
+            res.json({ error: true, message: "no books found by its title" })
+        }
     } catch (error) {
         next(error)
     }
