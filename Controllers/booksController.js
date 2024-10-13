@@ -7,10 +7,6 @@ let addBook = async (req, res, next) => {
         let { title, author, language, category, publisher, edition, price, numberOfPieces } = req.body
         if (title, author, language, category, publisher, edition, price, numberOfPieces) {
             title = title.toUpperCase();
-            // author = author.toLowerCase();
-            // language = language.toLowerCase();
-            // category = category.toLowerCase();
-            // publisher = publisher.toLowerCase();
 
             let book = await Book.create({ title, author, language, category, publisher, edition, price, numberOfPieces })
             console.log(book);
@@ -55,17 +51,13 @@ let updateBookeDetails = async (req, res, next) => {
         let { title, author, language, category, publisher, edition, price, numberOfPieces } = req.body
 
         title = title.toUpperCase();
-        // author = author.toLowerCase();
-        // language = language.toLowerCase();
-        // category = category.toLowerCase();
-        // publisher = publisher.toLowerCase();
 
         let book = await Book.findByIdAndUpdate(id)
-        console.log(book);
+
         if (!book) {
             res.json({ error: true, message: "book not found for this id" })
         } else {
-            let updatedBookDetails = await Book.updateOne({ _id: id }, { title, author, language, category, publisher, edition, price }, { new: true })
+            let updatedBookDetails = await Book.updateOne({ _id: id }, { title, author, language, category, publisher, edition, price, numberOfPieces }, { new: true })
             res.json({ error: false, message: "Book details updated successfully", book: book })
         }
     } catch (error) {
