@@ -8,11 +8,20 @@ let addBook = async (req, res, next) => {
         if (title, author, language, category, publisher, edition, price, numberOfPieces) {
             title = title.toUpperCase();
 
+            let sameTitles = await Book.find({ title: title })
+            console.log(sameTitles);
+
+            sameTitles.map((book) => {
+                if (book.author === author && book.language === language && book.category === category && book.publisher === publisher && book.edition === edition) {
+                    res.status(409).json({ error: true, message: "This book details is already stored" })
+                }
+            })
+
             let book = await Book.create({ title, author, language, category, publisher, edition, price, numberOfPieces })
             console.log(book);
             res.json({ error: false, message: "new book added to database successfully", book })
         } else {
-            res.json({ error: true, message: "Send all data" })
+            res.json({ error: true, message: "All details is necessary to store in backend" })
         }
 
     } catch (error) {
