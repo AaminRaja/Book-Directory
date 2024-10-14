@@ -11,17 +11,22 @@ let addBook = async (req, res, next) => {
             let sameTitles = await Book.find({ title: title })
             console.log(sameTitles);
 
+            let flagForAlreadyStored = false
             sameTitles.map((book) => {
                 if (book.author === author && book.language === language && book.category === category && book.publisher === publisher && book.edition === edition) {
-                    res.status(409).json({ error: true, message: "This book details is already stored" })
+                    flagForAlreadyStored = true
                 }
             })
 
-            let book = await Book.create({ title, author, language, category, publisher, edition, price, numberOfPieces })
-            console.log(book);
-            res.json({ error: false, message: "new book added to database successfully", book })
+            if (flagForAlreadyStored) {
+                return res.status(409).json({ error: true, message: "This book details is already stored" })
+            } else {
+                let book = await Book.create({ title, author, language, category, publisher, edition, price, numberOfPieces })
+                console.log(book);
+                return res.json({ error: false, message: "new book added to database successfully", book })
+            }
         } else {
-            res.json({ error: true, message: "All details is necessary to store in backend" })
+            return res.json({ error: true, message: "All details is necessary to store in backend" })
         }
 
     } catch (error) {
@@ -35,7 +40,7 @@ let getBook = async (req, res, next) => {
         let { id } = req.params
         let book = await Book.findById(id)
         console.log(book);
-        res.json({ error: false, message: "Book detals fetched successfully", book: book })
+        return res.json({ error: false, message: "Book detals fetched successfully", book: book })
     } catch (error) {
         next(error)
     }
